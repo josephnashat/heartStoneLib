@@ -1,0 +1,7 @@
+{
+  "name": "heatStoneLib",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
