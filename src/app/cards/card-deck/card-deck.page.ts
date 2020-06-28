@@ -1,3 +1,4 @@
+import { CardServiceService } from './../shared/card-service.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./card-deck.page.scss'],
 })
 export class CardDeckPage implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
+  public cardDecks: string[] = [];
+  constructor(private cardService: CardServiceService) {
+    this.cardService
+      .getAllCards()
+      .subscribe((cards) => (this.cardDecks = cards));
   }
 
+  ngOnInit() {}
 }
