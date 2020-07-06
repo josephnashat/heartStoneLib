@@ -1,33 +1,18 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-Card-Deck    
-</ion-title>
+      Card-Decks
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Card-Deck</ion-title>
+      <ion-title size="large">Card-Decks</ion-title>
     </ion-toolbar>
-  </ion-header>
-
-  <ion-list>
-    <ion-list-header>
-      <ion-label>Classes</ion-label>
-    </ion-list-header>
-
-    <ion-item *ngFor="let card of cardDecks">
-      <ion-avatar slot="start">
-        <img [src]="'assets/images/' + card + '.png'" >
-      </ion-avatar>
-      <ion-label>
-        <h2>{{card}}</h2>
-      </ion-label>
-    </ion-item>
-
-    
-  </ion-list>
-  
+  </ion-header>  
+  <app-card-list *ngFor="let cardDeck of cardDecks" [alertFn]="logger"
+   [items]="cardDeck.cardTypes" [listName]="cardDeck.cardName">
+  </app-card-list>
 </ion-content>

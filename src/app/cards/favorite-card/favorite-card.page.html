@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Favorites</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngFor="let card of favoriteCards">
+    <ion-card-header>
+      <ion-card-subtitle>
+        {{card?.type}}
+        <ion-icon name="flame" [ngClass]="card?.favorite ? 'favorite': ''" (click)="toggleCard(card)"
+          class="ion-float-right" size="large"></ion-icon>
+      </ion-card-subtitle>
+      <ion-card-title>
+        {{card?.name}}
+      </ion-card-title>
+
+    </ion-card-header>
+    <ion-item>
+
+      <ion-label>{{card?.cardSet}}</ion-label>
+      <ion-button fill="outline" slot="end" [routerLink]="[card.cardId]">View</ion-button>
+    </ion-item>
+
+    <ion-card-content>
+      <div [innerHTML]="card?.text"></div>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

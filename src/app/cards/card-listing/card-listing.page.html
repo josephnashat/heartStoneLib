@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{cardDeckGroup | titlecase}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-search [items]="cardsCopy" [filteredProperty]="'name'" (isSearching)="onIsSearching()"
+    (searchCompleted)="onSearchCompleted($event)"></app-search>
+  <ion-spinner name="dots" class="ion-text-center" *ngIf="isLoading"></ion-spinner>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline" pullingText="Pull to refresh"
+      refreshingSpinner="circles" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card *ngFor="let card of cards">
+    <ion-card-header>
+      <ion-card-subtitle>
+        {{card?.type}}
+        <ion-icon name="flame" [ngClass]="card?.favorite ? 'favorite': ''" (click)="favoriteCard(card)"
+          class="ion-float-right" size="large"></ion-icon>
+      </ion-card-subtitle>
+      <ion-card-title>
+        {{card?.name}}
+      </ion-card-title>
+
+    </ion-card-header>
+    <ion-item>
+
+      <ion-label>{{card?.cardSet}}</ion-label>
+      <ion-button fill="outline" slot="end" [routerLink]="[card.cardId]">View</ion-button>
+    </ion-item>
+
+    <ion-card-content>
+      <div [innerHTML]="card?.text"></div>
+    </ion-card-content>
+  </ion-card>
+
+
+
+
+</ion-content>

@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{card?.name | titlecase}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-img [src]="card?.img" (ionError)="errorFallback($event)"></ion-img>
+    <ion-card-content>
+      <ion-card-title>{{card?.name}}</ion-card-title>
+      <ion-card-subtitle>{{card?.type}}</ion-card-subtitle>
+      <ion-card-subtitle>{{card?.cardSet}}</ion-card-subtitle>
+
+      <p [innerHTML]="card?.text"></p>
+      <p>{{card?.flavor}}</p>
+      <ion-card-title>Stats</ion-card-title>
+      <p>
+        <b>Health:</b> {{card?.health}}
+      </p>
+      <p>
+        <b>Race:</b> {{card?.race}}
+      </p>
+      <p>
+        <b>Rarity:</b> {{card?.rarity}}
+      </p>
+      <p>
+        <b>Attack:</b> {{card?.attack}}
+      </p>
+      <p>
+        <b>Faction:</b> {{card?.faction}}
+      </p>
+
+    </ion-card-content>
+
+  </ion-card>
+</ion-content>
