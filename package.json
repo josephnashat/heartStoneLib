@@ -28,7 +28,6 @@
     "@ionic/angular": "^5.0.0",
     "@ionic/storage": "^2.2.0",
     "angularfire2": "^5.4.2",
-    "cordova-plugin-firebase": "^2.0.5",
     "cordova-sqlite-storage": "^5.0.0",
     "firebase": "^7.15.5",
     "rxjs": "~6.5.1",
@@ -43,6 +42,7 @@
     "@angular/language-service": "~9.1.6",
     "@capacitor/cli": "^2.2.0",
     "@ionic/angular-toolkit": "^2.1.1",
+    "@ionic/lab": "3.1.7",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
@@ -61,6 +61,8 @@
   },
   "description": "An Ionic project",
   "cordova": {
-    "plugins": {}
+    "plugins": {
+      "cordova-plugin-firebase": {}
+    }
   }
 }
