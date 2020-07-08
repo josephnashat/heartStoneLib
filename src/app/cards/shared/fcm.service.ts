@@ -19,7 +19,16 @@ export class FcmService {
     }
     if (this.platform.is('ios')) {
       token = await this.firebaseX.getToken();
-      await this.firebaseX.grantPermission();
+      const w: any = window;
+      w.FCMPlugin.requestPushPermissionIOS(
+        () => {
+          console.log('push permissions success');
+        },
+        (e) => {
+          console.log('push permissions fail', e);
+        }
+      );
+//      await this.firebaseX.grantPermission();
     }
     this.saveToken(token);
   }
@@ -31,17 +40,20 @@ export class FcmService {
     if (token) {
       data = { token, userId: 'currentUserId' };
       devicesDocumentRef
-      .doc(token)
-      .set(data)
-      .then((success) => console.log(success))
-      .catch((error) => console.log(error));
-    }else {
-      data = { token: 'ManualToken' + Date.now().toString(), userId: 'currentUserId' };
+        .doc(token)
+        .set(data)
+        .then((success) => console.log(success))
+        .catch((error) => console.log(error));
+    } else {
+      data = {
+        token: 'ManualToken' + Date.now().toString(),
+        userId: 'currentUserId',
+      };
       devicesDocumentRef
-      .doc('token' + + Date.now().toString())
-      .set(data)
-      .then((success) => console.log(success))
-      .catch((error) => console.log(error));
+        .doc('token' + +Date.now().toString())
+        .set(data)
+        .then((success) => console.log(success))
+        .catch((error) => console.log(error));
     }
   }
 
