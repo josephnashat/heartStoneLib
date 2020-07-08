@@ -26,10 +26,18 @@ export class FcmService {
 
   private saveToken(token: string) {
     // This is a function used to access firebase database
-    if (!token) { return; }
+    let data = {};
+    if (token) {
+      data = { token, userId: 'currentUserId' };
+    }else {
+      data = { token: 'ManualToken' , userId: 'currentUserId' };
+    }
     const devicesDocumentRef = this.afs.collection('devices');
-    const data = {token, userId: 'currentUserId'};
-    devicesDocumentRef.doc('token').set(data).then(success => console.log(success)).catch(error => console.log(error));
+    devicesDocumentRef
+      .doc('token' + Date.now())
+      .set(data)
+      .then((success) => console.log(success))
+      .catch((error) => console.log(error));
   }
 
   onNotifications() {
