@@ -1,13 +1,13 @@
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Platform } from '@ionic/angular';
 import { Injectable } from '@angular/core';
-import { Firebase } from '@ionic-native/firebase/ngx';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 @Injectable({
   providedIn: 'root',
 })
 export class FcmService {
   constructor(
-    private firebase: Firebase, // this is for cloud base messaging
+    private firebaseX: FirebaseX, // this is for cloud base messaging
     private platform: Platform,
     private afs: AngularFirestore // we need this only for the sake of firebase database
   ) {}
@@ -15,11 +15,11 @@ export class FcmService {
   async getToken() {
     let token: string;
     if (this.platform.is('android')) {
-      token = await this.firebase.getToken();
+      token = await this.firebaseX.getToken();
     }
     if (this.platform.is('ios')) {
-      token = await this.firebase.getToken();
-      await this.firebase.grantPermission();
+      token = await this.firebaseX.getToken();
+      await this.firebaseX.grantPermission();
     }
     this.saveToken(token);
   }
@@ -41,6 +41,6 @@ export class FcmService {
   }
 
   onNotifications() {
-    return this.firebase.onNotificationOpen();
+    return this.firebaseX.onMessageReceived();
   }
 }
