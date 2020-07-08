@@ -1,7 +1,6 @@
 {
   "name": "heatStoneLib",
   "integrations": {
-    "capacitor": {},
     "cordova": {}
   },
   "type": "angular",
