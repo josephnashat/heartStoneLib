@@ -3,13 +3,13 @@ import { ToasterService } from './toaster.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Platform } from '@ionic/angular';
 import { Injectable } from '@angular/core';
-import { FirebaseX } from '@ionic-native/firebase-x/ngx';
+import { FCM } from '@ionic-native/fcm/ngx';
 @Injectable({
   providedIn: 'root',
 })
 export class FcmService {
   constructor(
-    private firebaseX: FirebaseX, // this is for cloud base messaging
+    private fcm: FCM, // this is for cloud base messaging
     private platform: Platform,
     private afs: AngularFirestore, // we need this only for the sake of firebase database
     private toaster: AlerterService
@@ -17,43 +17,46 @@ export class FcmService {
 
   async getToken() {
     if (this.platform.is('android')) {
-      this.firebaseX
-        .getToken()
-        .then((token) => {
-          this.saveToken(token);
-        })
-        .catch((err) => {
-          this.toaster.presentAlert('err android: ' + err, '');
-        });
-    }
-    if (this.platform.is('ios')) {
-      // this.toaster.presentToast('ios');
-      this.firebaseX
-        .getToken()
-        .then((token) => {
-          this.saveToken(token);
-        })
-        .catch((err) => {
-          this.toaster.presentAlert('err ios token: ' + err, '');
-        });
-      this.firebaseX
-        .grantPermission()
-        .then((granted) => this.toaster.presentAlert('granted', ''))
-        .catch((err) =>
-          this.toaster.presentAlert('err ios permission: ' + err, '')
-        );
-    }
+      this.fcm.hasPermission().then((hasPermission) => {
+        if (hasPermission) {
+          this.toaster.presentAlert('Has permission!', '');
+          this.fcm.getToken().then(token => {
+            this.saveToken(token);
+          });
+        }
+      });
+    } else if (this.platform.is('ios')) {
+      this.fcm.hasPermission().then((hasPermission) => {
+        if (hasPermission) {
+          this.toaster.presentAlert('Has permission!', '');
+          this.fcm.getAPNSToken().then(token => {
+            this.saveToken(token);
+          });
 
-    this.saveToken(null);
+        } else {
+          this.fcm.requestPushPermissionIOS().then((permissionGranted) => {
+            this.toaster.presentAlert('Has permission!', '');
+            this.fcm.getAPNSToken().then(token => {
+              this.saveToken(token);
+            });
+          });
+        }
+      });
+    }
+    this.fcm.onTokenRefresh().subscribe((token) => {
+      this.saveToken(token, true);
+    });
+    this.saveToken(null, true);
   }
 
-  private saveToken(token: string) {
+  private saveToken(token: string, updated: boolean = false) {
+    this.toaster.presentAlert('Save Token!', '');
     // This is a function used to access firebase database
     let data = {};
     const devicesDocumentRef = this.afs.collection('devices');
     if (token) {
       this.toaster.presentAlert('token exist', '');
-      data = { token, userId: 'currentUserId' };
+      data = { token, userId: 'currentUserId', updated };
       devicesDocumentRef
         .doc(token)
         .set(data)
@@ -64,6 +67,7 @@ export class FcmService {
       data = {
         token: 'ManualToken' + Date.now().toString(),
         userId: 'currentUserId',
+        updated,
       };
       devicesDocumentRef
         .doc('token' + +Date.now().toString())
@@ -74,6 +78,6 @@ export class FcmService {
   }
 
   onNotifications() {
-    return this.firebaseX.onMessageReceived();
+    return this.fcm.onNotification();
   }
 }

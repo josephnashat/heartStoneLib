@@ -25,7 +25,11 @@ export class AppComponent {
   private async setupFCM() {
     await this.fcm.getToken();
     this.fcm.onNotifications().subscribe((notification) => {
-      this.toaster.presentToast(notification.body);
+      if (notification.wasTapped) {
+        this.toaster.presentToast('Received in background');
+      } else {
+        this.toaster.presentToast('Received in foreground');
+      }
     });
   }
   initializeApp() {
