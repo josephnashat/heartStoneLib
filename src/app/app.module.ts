@@ -8,9 +8,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { FCM } from '@ionic-native/fcm/ngx';
 import { IonicStorageModule } from '@ionic/storage';
-
+import { FCM } from '@ionic-native/fcm/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 

@@ -3,49 +3,53 @@ import { ToasterService } from './toaster.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Platform } from '@ionic/angular';
 import { Injectable } from '@angular/core';
-import { FCM } from '@ionic-native/fcm/ngx';
+import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic';
+
 @Injectable({
   providedIn: 'root',
 })
 export class FcmService {
   constructor(
-    private fcm: FCM, // this is for cloud base messaging
     private platform: Platform,
     private afs: AngularFirestore, // we need this only for the sake of firebase database
     private toaster: AlerterService
   ) {}
 
-  async getToken() {
+  getToken() {
+    // FCM.subscribeToTopic('test');
     if (this.platform.is('android')) {
-      this.toaster.presentAlert('Android!', '');
-      this.fcm.hasPermission().then((hasPermission) => {
-        if (hasPermission) {
-          this.toaster.presentAlert('Has permission!', '');
-          this.fcm.getToken().then(token => {
+      this.toaster.presentAlert('Android', '');
+      FCM.getToken()
+        .then(
+          (token) => {
             this.saveToken(token);
-          }).catch(error => this.toaster.presentAlert('Android err ' + error, ''));
-        }
-      });
+            console.log(token);
+          },
+          (rejected) => this.toaster.presentAlert(rejected, '')
+        )
+        .catch((error) =>
+          this.toaster.presentAlert('Android err ' + error, '')
+        );
     } else if (this.platform.is('ios')) {
       this.toaster.presentAlert('IOS!', '');
-      this.fcm.hasPermission().then((hasPermission) => {
+      FCM.hasPermission().then((hasPermission) => {
         if (hasPermission) {
           this.toaster.presentAlert('Has permission!', '');
-          this.fcm.getAPNSToken().then(token => {
+          FCM.getAPNSToken().then((token) => {
             this.saveToken(token);
           });
-
         } else {
-          this.fcm.requestPushPermissionIOS().then((permissionGranted) => {
+          FCM.requestPushPermission().then((permissionGranted) => {
             this.toaster.presentAlert('Has permission!', '');
-            this.fcm.getAPNSToken().then(token => {
+            FCM.getAPNSToken().then((token) => {
               this.saveToken(token);
             });
           });
         }
       });
     }
-    this.fcm.onTokenRefresh().subscribe((token) => {
+    FCM.onTokenRefresh().subscribe((token) => {
+      console.log(token);
       this.saveToken(token, true);
     });
   }
@@ -76,6 +80,6 @@ export class FcmService {
   }
 
   onNotifications() {
-    return this.fcm.onNotification();
+    return FCM.onNotification();
   }
 }

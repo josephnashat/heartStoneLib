@@ -20,11 +20,11 @@ export class AppComponent {
     private toaster: ToasterService
   ) {
     this.initializeApp();
-    this.setupFCM();
   }
-  private async setupFCM() {
-    await this.fcm.getToken();
+  private setupFCM() {
+    this.fcm.getToken();
     this.fcm.onNotifications().subscribe((notification) => {
+      console.log(notification);
       if (notification.wasTapped) {
         this.toaster.presentToast('Received in background');
       } else {
@@ -36,6 +36,7 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      this.setupFCM();
     });
   }
 }
