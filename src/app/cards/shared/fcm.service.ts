@@ -17,15 +17,17 @@ export class FcmService {
 
   async getToken() {
     if (this.platform.is('android')) {
+      this.toaster.presentAlert('Android!', '');
       this.fcm.hasPermission().then((hasPermission) => {
         if (hasPermission) {
           this.toaster.presentAlert('Has permission!', '');
           this.fcm.getToken().then(token => {
             this.saveToken(token);
-          });
+          }).catch(error => this.toaster.presentAlert('Android err ' + error, ''));
         }
       });
     } else if (this.platform.is('ios')) {
+      this.toaster.presentAlert('IOS!', '');
       this.fcm.hasPermission().then((hasPermission) => {
         if (hasPermission) {
           this.toaster.presentAlert('Has permission!', '');
@@ -46,16 +48,13 @@ export class FcmService {
     this.fcm.onTokenRefresh().subscribe((token) => {
       this.saveToken(token, true);
     });
-    this.saveToken(null, true);
   }
 
   private saveToken(token: string, updated: boolean = false) {
-    this.toaster.presentAlert('Save Token!', '');
     // This is a function used to access firebase database
     let data = {};
     const devicesDocumentRef = this.afs.collection('devices');
     if (token) {
-      this.toaster.presentAlert('token exist', '');
       data = { token, userId: 'currentUserId', updated };
       devicesDocumentRef
         .doc(token)
@@ -63,7 +62,6 @@ export class FcmService {
         .then((success) => console.log(success))
         .catch((error) => console.log(error));
     } else {
-      this.toaster.presentAlert('no token exist', '');
       data = {
         token: 'ManualToken' + Date.now().toString(),
         userId: 'currentUserId',
