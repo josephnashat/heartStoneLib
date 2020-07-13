@@ -34,14 +34,24 @@ export class FcmService {
       this.toaster.presentAlert('IOS!', '');
       FCM.hasPermission().then((hasPermission) => {
         if (hasPermission) {
-          this.toaster.presentAlert('Has permission!', '');
+          this.toaster.presentAlert('Already Has permission!', '');
           FCM.getAPNSToken().then((token) => {
+            this.toaster.presentAlert('has permission, apns', '');
+            this.saveToken(token);
+          });
+          FCM.getToken().then((token) => {
+            this.toaster.presentAlert('has permission, get token', '');
             this.saveToken(token);
           });
         } else {
           FCM.requestPushPermission().then((permissionGranted) => {
-            this.toaster.presentAlert('Has permission!', '');
+            this.toaster.presentAlert('Request permission!', '');
             FCM.getAPNSToken().then((token) => {
+              this.toaster.presentAlert('request permission, apns', '');
+              this.saveToken(token);
+            });
+            FCM.getToken().then((token) => {
+              this.toaster.presentAlert('request permission, get token', '');
               this.saveToken(token);
             });
           });
